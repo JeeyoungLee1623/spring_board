@@ -1,49 +1,95 @@
 package com.example.spring_board.author.controller;
 
 import com.example.spring_board.author.domain.Author;
-import com.example.spring_board.author.repository.AuthorRepository;
+import com.example.spring_board.author.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.OptionalInt;
 
-@Service
-public class AuthorService {
-
+@Controller
+public class AuthorController {
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
 
-    // 회원가입
-    public void create(Author author) throws SQLException {
-        System.out.println("author repository");
-        authorRepository.save(author);
+
+    @GetMapping("/")
+    public String Home() {
+        return "home";
     }
 
-    //   회원 목록 조회
-    public List<Author> findAll() throws SQLException {
-        List<Author> authors = authorRepository.findAll();
+    // PostMapping 을 통해 AuthorService 호출하는 Method 생성
 
-        return authors;
+
+    @GetMapping("authors/new")
+    public String authorCreateForm(){
+        return "author/author-register";
+    }
+    @PostMapping("authors/new")
+//    input 값을 form-data 로 받는 형식
+    public String authorCreate(@RequestParam(value = "name")String myName,
+                               @RequestParam(value = "email")String myEmail,
+                               @RequestParam(value = "password")String myPassword,
+                               @RequestParam(value = "role")String myRole) throws SQLException {
+        Author author1 = new Author();
+        author1.setName(myName);
+        author1.setEmail(myEmail);
+        author1.setPassword(myPassword);
+        author1.setRole(myRole);
+        author1.setCreateDate(LocalDateTime.now());
+        authorService.create(author1);
+        return "redirect:/";
     }
 
-    public  Author findById(Long myId) throws SQLException {
-        Author authors = authorRepository.findById(myId).orElse(null);
-        return authors;
+    @GetMapping("authors")
+    public String authorFindAll(Model model) throws SQLException {
+        List<Author> authors = authorService.findAll();
+        model.addAttribute("authorList", authors);
+        return "author/author-list";
     }
-    //    회원 수정
-    public void update(Author author) throws Exception {
-        Author author1 = authorRepository.findById(author.getId()).orElse(null);
-        if(author1 == null){
-            throw new Exception();
-        }else{
-            author1.setName(author.getName());
-            author1.setEmail(author.getEmail());
-            author1.setPassword(author.getPassword());
-            authorRepository.save(author1);
-        }
+
+    @GetMapping("author")
+    public String authorFindById(@RequestParam(value = "id")Long myId, Model model) throws Exception {
+        Author author = authorService.findById(myId);
+        model.addAttribute("author", author);
+        return "author/author-detail";
     }
+
+
+    @PostMapping("author/update")
+    public String authorUpdate(@RequestParam(value = "id")String myId,
+                               @RequestParam(value = "name")String myName,
+                               @RequestParam(value = "email")String myEmail,
+                               @RequestParam(value = "password")String myPassword,
+                               @RequestParam(value = "role")String myRole) throws Exception {
+        Author author1 = new Author();
+        author1.setId(Long.parseLong(myId));
+        author1.setName(myName);
+        author1.setEmail(myEmail);
+        author1.setPassword(myPassword);
+        author1.setRole(myRole);
+        authorService.update(author1);
+        return "redirect:/";
+    }
+
+    
+//    DeleteMapping 을 사용할 수도 있지만 DeleteMapping 은 form 태그에서는 지원하지 않는다.
+//    form 태그에서 DeleteMapping 을 지원하지 않는다는 말은 action = "delete" 를 줄수 없다는 뜻.
+//    그래서, react 나 vue.js 와 같은 프론트엔드의 특정한 기술을 통해서 delete 요청을 일반적으로 하므로, 
+//    rest api 방식의 개발(json) 에서는 DeleteMapping 이 가능하다. 
+    @GetMapping("author/delete")
+    public String deleteAuthor(@RequestParam(value = "id")String id){
+        authorService.delete(Long.parseLong(id));
+        return "redirect:/authors";
+    }
+
+
 
 
 
