@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 
 // DataJpaTest 를 사용하면 매 테스트코드가 종료되면 자동으로 DB 가 원상복구 (롤백)
 @DataJpaTest
@@ -25,11 +25,19 @@ public class AuthorRepositoryTest {
 
     @Test
     public void authorSave(){
-        Author authorInput = new Author();
-        authorInput.setName("hong");
-        authorInput.setEmail("hong@naver.com");
-        authorInput.setPassword("1234");
-        
+//        Author authorInput = new Author();
+//        authorInput.setName("hong");
+//        authorInput.setEmail("hong@naver.com");
+//        authorInput.setPassword("1234");
+//
+//        authorRepository.save(authorInput);
+
+
+        Author authorInput = Author.builder()
+                .password("1234")
+                .name("hong")
+                .email("hong@naver.com")
+                .build();
         authorRepository.save(authorInput);
         
 //        저장된 데이터를 다시 조회해서, 입력한 테스트 데이터와 동일한지 검증

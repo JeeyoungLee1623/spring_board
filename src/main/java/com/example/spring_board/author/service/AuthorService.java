@@ -1,6 +1,7 @@
 package com.example.spring_board.author.service;
 
 import com.example.spring_board.author.domain.Author;
+import com.example.spring_board.author.etc.AuthorRequestDto;
 import com.example.spring_board.author.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,15 +34,15 @@ public class AuthorService {
         return authors;
     }
     //    회원 수정
-    public void update(Author author) throws Exception {
-        Author author1 = authorRepository.findById(author.getId()).orElse(null);
+    public void update(AuthorRequestDto authorRequestDto) throws Exception {
+        Author author1 = authorRepository.findById(Long.parseLong(authorRequestDto.getId())).orElseThrow(Exception::new);
         if (author1 == null) {
             throw new Exception();
         } else {
-            author1.setName(author.getName());
-            author1.setEmail(author.getEmail());
-            author1.setPassword(author.getPassword());
-            author1.setRole(author.getRole());
+            author1.setName(authorRequestDto.getName());
+            author1.setEmail(authorRequestDto.getEmail());
+            author1.setPassword(authorRequestDto.getPassword());
+            author1.setRole(authorRequestDto.getRole());
             authorRepository.save(author1);
         }
 
@@ -52,6 +53,13 @@ public class AuthorService {
 //      해당 author 객체로 jpa 가 delete 할 수 있도록 전달해준다.
         authorRepository.delete(this.findById(id));
         }
+
+
+        public Author findByEmail(String email) {
+        return authorRepository.findByEmail(email);
+        }
+
+
 
 
 
