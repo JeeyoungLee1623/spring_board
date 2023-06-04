@@ -14,3 +14,9 @@ spring:
     hibernate:
       ddl-auto: update
     show_sql: true
+
+logging:
+  level:
+#    log.error 로그 이상만 출력: trace < debug < info < error
+#    실무에서는 일반적으로 info 로 설정, info 는 굳이 설정안해도 default 가 info 다.
+    root: info

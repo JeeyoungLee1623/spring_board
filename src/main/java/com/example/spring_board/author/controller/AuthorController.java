@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Controller
@@ -115,6 +116,12 @@ public class AuthorController {
     public String deleteAuthor(@RequestParam(value = "id")String id){
         authorService.delete(Long.parseLong(id));
         return "redirect:/authors";
+    }
+
+//    로그인
+    @GetMapping("author/login")
+    public String authorLoginForm(){
+        return "author/login";
     }
 
 
