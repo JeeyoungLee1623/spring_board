@@ -8,9 +8,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
@@ -18,13 +20,21 @@ import java.util.List;
 import java.util.OptionalInt;
 
 @Service
+@Transactional
 public class AuthorService implements UserDetailsService {
 
     @Autowired
     private AuthorRepository authorRepository;
 
+//    비밀번호 암호화 싱글톤으로 생성
+//    의존성 주입 (dependency injection - DI)
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    
     // 회원가입
     public void create(Author author) throws SQLException {
+        author.setPassword(passwordEncoder.encode(author.getPassword()));
         authorRepository.save(author);
     }
 

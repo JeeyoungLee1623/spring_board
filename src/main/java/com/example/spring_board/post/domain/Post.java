@@ -35,17 +35,24 @@ public class Post {
     @JoinColumn(nullable = false, name = "author_id")
     private Author author;
 
+    @Column(length = 1)
+    private String appointment;
+    @Column()
+    private LocalDateTime appointment_time;
 
     @Column()
     private LocalDateTime CreateDate;
 
 
     @Builder
-    public Post (String title, String contents, Author author){
+    public Post (String title, String contents, Author author, String appointment, LocalDateTime appointment_time){
         this.title = title;
         this.contents = contents;
         this.author = author;
         this.CreateDate = LocalDateTime.now();
+        this.appointment = appointment;
+        this.appointment_time = appointment_time;
+
     }
 
 }

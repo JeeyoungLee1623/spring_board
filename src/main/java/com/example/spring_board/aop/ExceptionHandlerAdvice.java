@@ -26,7 +26,7 @@ public class ExceptionHandlerAdvice {
         String context = "<header><h1> 중복된 이메일 입니다.</h1></header>";
         return new ResponseEntity<String>(context, HttpStatus.CONFLICT);
     }
-
+//
 //    그 외의 모든 예외
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<String> etcException(Exception e){
